@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  data-service:
+    build:
+      context: ./promptfolio-data-service
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/v1/profile"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ai-gateway:
+    build:
+      context: ./promptfolio-ai-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - JAVA_SERVICE_URL=http://data-service:8080/api/v1/profile
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      data-service:
+        condition: service_healthy
+
+  ui:
+    build:
+      context: ./promptfolio-ui
+    ports:
+      - "5173:80"
+    depends_on:
+      - ai-gateway
