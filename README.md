@@ -2,21 +2,21 @@
 
 PromptFolio is a microservices-lite architecture designed to serve as an interactive, AI-powered professional portfolio. It uses Google's Gemini API to chat with users about the candidate's professional experience, ensuring all responses are strictly grounded in the provided JSON data to prevent hallucinations.
 
-## Architecture
+## 🏗️ Architecture Overview
 
-The project consists of three decoupled layers:
+This project is built using a "Scale-to-Zero" serverless architecture deployed on Google Cloud Run to eliminate infrastructure costs while maintaining a multi-language microservice environment.
 
-1. **Core Data Service (`promptfolio-data-service`)**:
-   - Built with Java, Spring Boot 3, and GraalVM.
-   - Acts as the system of record, serving structured JSON containing professional metadata (`profile_data.json`).
-2. **AI Gateway (`promptfolio-ai-gateway`)**:
-   - Built with Python and FastAPI.
-   - Orchestrator layer that fetches data from the Java service, constructs a system prompt, and interfaces with the Google Gemini API.
-3. **Frontend Client (`promptfolio-ui`)**:
-   - Built with React and Vite.
-   - A minimalist, premium text-based terminal UI that captures user input and displays the AI's response.
+1. **Frontend Client (React / Vite):** A lightweight "thin client" styled as a sleek terminal UI. Captures user input and renders markdown-formatted AI responses.
+2. **AI Gateway (Python / FastAPI):** The orchestrator. Fetches the system of record data, dynamically constructs context-aware system prompts, and interfaces with the Google Gemini API to serve responses.
+3. **Core Data Service (Java / Spring Boot 3):** The system of record. Serves highly structured JSON metadata containing professional experience, enterprise refactoring case studies, and system architecture focus. *(Compiled natively via GraalVM for <100ms cold starts).*
 
-## Getting Started
+## 🚀 Tech Stack
+* **Frontend:** React, Vite, Tailwind/CSS
+* **AI Orchestration:** Python, FastAPI, Google Generative AI (Gemini)
+* **Data Layer:** Java, Spring Boot, GraalVM
+* **Deployment:** Google Cloud Run (Docker), Vercel
+
+## 💻 Local Setup
 
 ### Prerequisites
 - Docker and Docker Compose (recommended)
@@ -69,3 +69,6 @@ npm run dev
 To update the AI with your own experience, edit the `src/main/resources/profile_data.json` file inside the `promptfolio-data-service`. The AI Gateway will automatically fetch this new data on the next request.
 
 You can also update your photo, name, and links in the `promptfolio-ui/src/App.jsx` file.
+
+## 🧠 Why this Architecture?
+As a backend-focused engineer, I built PromptFolio to demonstrate how to handle inter-service communication securely. Instead of exposing personal data in a public repository, the actual profile JSON is injected as a secure environment variable/secret into the backend runtime, proving an understanding of enterprise secret management and decoupled data pipelines.
